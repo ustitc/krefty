@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.5.30"
+    id("io.gitlab.arturbosch.detekt") version "1.18.1"
 }
 
 repositories {
@@ -13,6 +14,21 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    reports {
+        html.enabled = false
+        xml.enabled = false
+        txt.enabled = true
+        sarif.enabled = false
+    }
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    jvmTarget = "11"
+}
+
 val kotestVersion = "4.6.3"
 
 dependencies {
@@ -20,4 +36,3 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-property:$kotestVersion")
 }
-
