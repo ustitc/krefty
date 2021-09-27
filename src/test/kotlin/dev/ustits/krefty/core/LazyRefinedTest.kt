@@ -10,14 +10,14 @@ class LazyRefinedTest : StringSpec({
     "correct refinement returns passed value" {
         forAll<String> {
             val refined = LazyRefined(Predicate.Stub(true), it)
-            refined.unrefined() == it
+            refined.unrefined == it
         }
     }
 
     "incorrect refinement throws error" {
         checkAll<String> {
             val refined = LazyRefined(Predicate.Stub(false), it)
-            shouldThrow<RefinementException> { refined.unrefined() }
+            shouldThrow<RefinementException> { refined.unrefined }
         }
     }
 

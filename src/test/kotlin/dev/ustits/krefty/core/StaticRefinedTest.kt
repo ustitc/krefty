@@ -8,7 +8,7 @@ class StaticRefinedTest : StringSpec({
     "holds passed value" {
         forAll<String> {
             val refined = StaticRefined(it)
-            refined.unrefined() == it
+            refined.unrefined == it
         }
     }
 })

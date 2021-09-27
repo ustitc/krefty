@@ -7,7 +7,7 @@ class FailedRefinedTest : StringSpec({
 
     "throws passed exception" {
         val refined = FailedRefined<Predicate<String>, String>(IllegalStateException())
-        shouldThrowExactly<IllegalStateException> { refined.unrefined() }
+        shouldThrowExactly<IllegalStateException> { refined.unrefined }
     }
 
 })

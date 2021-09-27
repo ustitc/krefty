@@ -8,10 +8,8 @@ class EagerRefined<P : Predicate<T>, T> private constructor(private val value: T
         onError: (T) -> Throwable = { RefinementException("Value $it doesn't match the predicate") }
     ) : this(LazyRefined(predicate, value, onError))
 
-    constructor(refined: LazyRefined<P, T>) : this(refined.unrefined())
+    constructor(lazy: LazyRefined<P, T>) : this(lazy.unrefined)
 
-    override fun unrefined(): T {
-        return value
-    }
-
+    override val unrefined: T
+        get() = value
 }

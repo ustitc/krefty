@@ -15,7 +15,6 @@ value class LazyRefined<P : Predicate<T>, T> private constructor(private val inn
         }
     )
 
-    override fun unrefined(): T {
-        return inner.unrefined()
-    }
+    override val unrefined: T
+        get() = inner.unrefined
 }
