@@ -1,38 +1,25 @@
 plugins {
-    kotlin("jvm") version "1.5.30"
-    id("io.gitlab.arturbosch.detekt") version "1.18.1"
+    kotlin("jvm") version "1.5.30" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.18.1" apply false
 }
 
-repositories {
-    mavenCentral()
-}
+subprojects {
 
-group = "dev.ustits"
-version = "0.1.0-SNAPSHOT"
+    apply(plugin = "org.jetbrains.kotlin.jvm")
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+    group = "dev.ustits.krefty"
+    version = "0.1.0-SNAPSHOT"
 
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    reports {
-        html.enabled = false
-        xml.enabled = false
-        txt.enabled = true
-        sarif.enabled = false
+    repositories {
+        mavenCentral()
     }
-}
 
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-    jvmTarget = "11"
-}
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 
-val kotestVersion = "4.6.3"
+    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        jvmTarget = "11"
+    }
 
-dependencies {
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-    testImplementation("io.kotest:kotest-property:$kotestVersion")
 }
