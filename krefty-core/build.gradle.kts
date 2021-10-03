@@ -25,6 +25,11 @@ signing {
     sign(publishing.publications)
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     repositories {
         maven {
