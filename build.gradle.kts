@@ -8,7 +8,7 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
     group = "dev.ustits.krefty"
-    version = "0.1.0-SNAPSHOT"
+    version = Ci.version
 
     repositories {
         mavenCentral()

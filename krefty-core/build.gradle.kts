@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("maven-publish")
     id("io.gitlab.arturbosch.detekt")
+    id("signing")
 }
 
 detekt {
@@ -15,9 +16,31 @@ detekt {
     }
 }
 
+signing {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    if (signingKey != null && signingPassword != null) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+    sign(publishing.publications)
+}
+
 publishing {
+    repositories {
+        maven {
+            val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            name = "sonatype"
+            url = if (Ci.isRelease) releasesRepoUrl else snapshotsRepoUrl
+            credentials {
+                username = System.getenv("OSSRH_USERNAME") ?: ""
+                password = System.getenv("OSSRH_PASSWORD") ?: ""
+            }
+        }
+    }
+
     publications {
-        create<MavenPublication>("myLibrary") {
+        create<MavenPublication>("kreftyLib") {
             from(components["kotlin"])
             pom {
                 name.set("krefty")
@@ -37,6 +60,12 @@ publishing {
                         name.set("Ruslan Ustits")
                         email.set("ustitsruslan@gmail.com")
                     }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/ustits/krefty.git")
+                    developerConnection.set("scm:git:ssh://github.com:ustits/krefty.git")
+                    url.set("http://github.com/ustits/krefty/tree/main")
                 }
             }
 
