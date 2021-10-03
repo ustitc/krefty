@@ -22,7 +22,9 @@ signing {
     if (signingKey != null && signingPassword != null) {
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
-    sign(publishing.publications)
+    if (Ci.isRelease) {
+        sign(publishing.publications)
+    }
 }
 
 java {
@@ -46,7 +48,7 @@ publishing {
 
     publications {
         create<MavenPublication>("kreftyLib") {
-            from(components["kotlin"])
+            from(components["java"])
             pom {
                 name.set("krefty")
                 description.set("Refined types for Kotlin")
