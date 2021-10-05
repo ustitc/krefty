@@ -5,6 +5,6 @@ import dev.ustits.krefty.core.Predicate
 class GreaterThan(private val number: Int) : Predicate<Int> {
 
     override fun isRefined(value: Int): Boolean {
-        return number > value
+        return value > number
     }
 }

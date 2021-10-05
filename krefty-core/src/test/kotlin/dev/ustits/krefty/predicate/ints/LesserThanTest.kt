@@ -8,19 +8,19 @@ import io.kotest.property.forAll
 
 class LesserThanTest : StringSpec({
 
-    "returns false if greater than number" {
+    "returns true if less than number" {
         val value = 10
         forAll(Arb.int(Int.MIN_VALUE until value)) {
             val predicate = LesserThan(value)
-            !predicate.isRefined(it)
+            predicate.isRefined(it)
         }
     }
 
-    "returns false if lesser than number" {
+    "returns false if greater than number" {
         val value = 10
         forAll(Arb.int((value + 1)..Int.MAX_VALUE)) {
             val predicate = LesserThan(value)
-            predicate.isRefined(it)
+            !predicate.isRefined(it)
         }
     }
 
