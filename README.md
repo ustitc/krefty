@@ -37,3 +37,12 @@ class PositiveInt(value: Int) : Refined<Positive, Int> by EagerRefined(Positive(
 val negative = PositiveInt(-10) // throws exception
 negative.unrefined
 ```
+
+If you need something complex define your own predicate:
+
+```kotlin
+class PercentPredicate : Predicate<Int> by And(GreaterThanOrEqualTo(0), LesserThanOrEqualTo(100))
+
+class Percent(value: Int) : Refined<PercentPredicate, Int> by LazyRefined(PercentPredicate(), value) 
+```
+
