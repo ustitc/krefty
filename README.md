@@ -17,7 +17,43 @@ implementation("dev.ustits.krefty:krefty-core:<latest_version>")
 
 ## Usage
 
-To construct a type implement `Refined` interface and reuse `LazyRefined` implementation:
+To refine a type use `refineWith` function with a predicate:
+
+```kotlin
+val refined = "Krefty" refineWith NotBlank()
+```
+
+Function will ensure that the value `"Krefty"` satisfies the predicate `NotBlank`. If not it will cause an error. 
+
+Call `unrefined` to get the value back:
+
+```kotlin
+refined.unrefined // "Krefty"
+```
+
+A newly created object can be used to construct new types, for example, 
+by passing it in the constructor:
+
+```kotlin
+class NotBlankString private constructor(private val value: String) {
+
+    constructor(refined: Refined<NotBlank, String>) : this(refined.unrefined)
+
+}
+
+val notBlank = NotBlankString(refined)
+```
+
+Construct new predicates using delegation:
+
+```kotlin
+class Percent : Predicate<Int> by And(GreaterThanOrEqualTo(0), LesserThanOrEqualTo(100))
+
+val refined = 45 refineWith Percent()
+```
+
+New types can also be created by delegation. To construct a type implement `Refined` interface 
+and reuse `LazyRefined` implementation:
 
 ```kotlin 
 class PositiveInt(value: Int) : Refined<Positive, Int> by LazyRefined(Positive(), value)
@@ -37,12 +73,3 @@ class PositiveInt(value: Int) : Refined<Positive, Int> by EagerRefined(Positive(
 val negative = PositiveInt(-10) // throws exception
 negative.unrefined
 ```
-
-If you need something complex define your own predicate:
-
-```kotlin
-class PercentPredicate : Predicate<Int> by And(GreaterThanOrEqualTo(0), LesserThanOrEqualTo(100))
-
-class Percent(value: Int) : Refined<PercentPredicate, Int> by LazyRefined(PercentPredicate(), value) 
-```
-
