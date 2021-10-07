@@ -47,15 +47,17 @@ val notBlank = NotBlankString(refined)
 Construct new predicates using delegation:
 
 ```kotlin
-class Percent : Predicate<Int> by And(GreaterThanOrEqualTo(0), LesserThanOrEqualTo(100))
+class UserID : Predicate<Int> by Positive()
+val userID = 443812 refineWith UserID()
 
-val refined = 45 refineWith Percent()
+class Percent : Predicate<Int> by And(GreaterThanOrEqualTo(0), LesserThanOrEqualTo(100))
+val percent = 45 refineWith Percent()
 ```
 
 New types can also be created by delegation. To construct a type implement `Refined` interface 
 and reuse `LazyRefined` implementation:
 
-```kotlin 
+```kotlin
 class PositiveInt(value: Int) : Refined<Positive, Int> by LazyRefined(Positive(), value)
 
 val positive = PositiveInt(10)
