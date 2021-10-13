@@ -18,10 +18,10 @@ implementation("dev.ustits.krefty:krefty-core:<latest_version>")
 
 ## Usage
 
-To refine a type use `refineWith` function with a predicate:
+To refine a type use `refined` function with a predicate:
 
 ```kotlin
-val refined = "Krefty" refineWith NotBlank()
+val name = "Krefty" refined NotBlank()
 ```
 
 Function will ensure that the value `"Krefty"` satisfies the predicate `NotBlank`. If not it will cause an error. 
@@ -29,7 +29,7 @@ Function will ensure that the value `"Krefty"` satisfies the predicate `NotBlank
 Call `unrefined` to get the value back:
 
 ```kotlin
-refined.unrefined // "Krefty"
+name.unrefined // "Krefty"
 ```
 
 A newly created object can be used to construct new types, for example, 
@@ -49,30 +49,8 @@ Construct new predicates using delegation:
 
 ```kotlin
 class UserID : Predicate<Int> by Positive()
-val userID = 443812 refineWith UserID()
+val userID = 443812 refined UserID()
 
 class Percent : Predicate<Int> by And(GreaterThanOrEqualTo(0), LesserThanOrEqualTo(100))
-val percent = 45 refineWith Percent()
-```
-
-New types can also be created by delegation. To construct a type implement `Refined` interface 
-and reuse `LazyRefined` implementation:
-
-```kotlin
-class PositiveInt(value: Int) : Refined<Positive, Int> by LazyRefined(Positive(), value)
-
-val positive = PositiveInt(10)
-positive.unrefined
-
-val negative = PositiveInt(-10)
-negative.unrefined // throws exception
-```
-
-If you need to fail immediately use `EagerRefined`:
-
-```kotlin
-class PositiveInt(value: Int) : Refined<Positive, Int> by EagerRefined(Positive(), value)
-
-val negative = PositiveInt(-10) // throws exception
-negative.unrefined
+val percent = 45 refined Percent()
 ```

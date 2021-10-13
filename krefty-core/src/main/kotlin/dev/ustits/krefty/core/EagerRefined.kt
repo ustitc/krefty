@@ -1,6 +1,6 @@
 package dev.ustits.krefty.core
 
-class EagerRefined<P : Predicate<T>, T> private constructor(private val value: T) : Refined<P, T> {
+internal class EagerRefined<P : Predicate<T>, T> private constructor(private val value: T) : Refined<P, T> {
 
     constructor(
         predicate: P,
@@ -13,8 +13,6 @@ class EagerRefined<P : Predicate<T>, T> private constructor(private val value: T
             throw onError.invoke(value)
         }
     )
-
-    constructor(lazy: LazyRefined<P, T>) : this(lazy.unrefined)
 
     override val unrefined: T
         get() = value
