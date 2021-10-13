@@ -9,35 +9,35 @@ import io.kotest.matchers.shouldNotBe
 
 class DSLTest : StringSpec({
 
-    "refineWith returns object if can refine" {
+    "refined returns object if can refine" {
         shouldNotThrowAny {
-            "test" refineWith Predicate.Stub(true)
+            "test" refined Predicate.Stub(true)
         }
     }
 
-    "refineWith throws exception if can't refine" {
+    "refined throws exception if can't refine" {
         shouldThrowAny {
-            "test" refineWith Predicate.Stub(false)
+            "test" refined Predicate.Stub(false)
         }
     }
 
-    "refineWithOrResult returns ok result if can refine" {
-        val result = "test" refineWithOrResult Predicate.Stub(true)
+    "refinedOrError returns ok result if can refine" {
+        val result = "test" refinedOrError Predicate.Stub(true)
         result.isSuccess shouldBe true
     }
 
-    "refineWithOrResult returns failed result if can refine" {
-        val result = "test" refineWithOrResult Predicate.Stub(false)
+    "refinedOrError returns failed result if can refine" {
+        val result = "test" refinedOrError Predicate.Stub(false)
         result.isFailure shouldBe true
     }
 
-    "refineWithOrNull returns object if can refine" {
-        val result = "test" refineWithOrNull Predicate.Stub(true)
+    "refinedOrNull returns object if can refine" {
+        val result = "test" refinedOrNull Predicate.Stub(true)
         result shouldNotBe null
     }
 
-    "refineWithOrNull returns null if can't refine" {
-        val result = "test" refineWithOrNull Predicate.Stub(false)
+    "refinedOrNull returns null if can't refine" {
+        val result = "test" refinedOrNull Predicate.Stub(false)
         result shouldBe null
     }
 
