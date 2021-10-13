@@ -3,17 +3,7 @@ plugins {
     id("java-library")
     id("maven-publish")
     id("signing")
-    id("jacoco")
-    id("org.sonarqube") version "3.3"
     id("io.gitlab.arturbosch.detekt") version "1.18.1" apply false
-}
-
-sonarqube {
-    properties {
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.organization", "ustits")
-        property("sonar.projectKey", "ustits_krefty")
-    }
 }
 
 subprojects {
@@ -26,6 +16,7 @@ subprojects {
 
     group = "dev.ustits.krefty"
     version = Ci.version
+    java.sourceCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenCentral()
