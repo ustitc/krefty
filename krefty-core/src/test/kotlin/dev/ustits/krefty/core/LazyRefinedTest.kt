@@ -1,5 +1,6 @@
 package dev.ustits.krefty.core
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.property.checkAll
@@ -14,7 +15,15 @@ class LazyRefinedTest : StringSpec({
         }
     }
 
-    "incorrect refinement throws error" {
+    "incorrect refinement doesn't throw error on object creation" {
+        checkAll<String> {
+            shouldNotThrowAny {
+                LazyRefined(Predicate.Stub(false), it)
+            }
+        }
+    }
+
+    "incorrect refinement throws error on unrefined call" {
         checkAll<String> {
             val refined = LazyRefined(Predicate.Stub(false), it)
             shouldThrow<RefinementException> { refined.unrefined }
