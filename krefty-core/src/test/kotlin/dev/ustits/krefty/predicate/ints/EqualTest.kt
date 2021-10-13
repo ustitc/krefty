@@ -7,17 +7,17 @@ import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.int
 import io.kotest.property.forAll
 
-class EqualToTest : StringSpec({
+class EqualTest : StringSpec({
 
     "returns true if equal to number" {
-        val predicate = EqualTo(10)
+        val predicate = Equal(10)
         predicate.isRefined(10) shouldBe true
     }
 
     "returns false if not equal to number" {
         val value = 10
         forAll(intNotEqualTo(value)) {
-            val predicate = EqualTo(value)
+            val predicate = Equal(value)
             !predicate.isRefined(it)
         }
     }

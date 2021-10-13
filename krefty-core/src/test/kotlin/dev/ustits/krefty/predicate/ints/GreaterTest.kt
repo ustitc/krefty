@@ -6,26 +6,26 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
 import io.kotest.property.forAll
 
-class LesserThanTest : StringSpec({
+class GreaterTest : StringSpec({
 
-    "returns true if less than number" {
+    "returns false if less than number" {
         val value = 10
         forAll(Arb.int(Int.MIN_VALUE until value)) {
-            val predicate = LesserThan(value)
-            predicate.isRefined(it)
-        }
-    }
-
-    "returns false if greater than number" {
-        val value = 10
-        forAll(Arb.int((value + 1)..Int.MAX_VALUE)) {
-            val predicate = LesserThan(value)
+            val predicate = Greater(value)
             !predicate.isRefined(it)
         }
     }
 
+    "returns true if greater than number" {
+        val value = 10
+        forAll(Arb.int((value + 1)..Int.MAX_VALUE)) {
+            val predicate = Greater(value)
+            predicate.isRefined(it)
+        }
+    }
+
     "returns false if equal to number" {
-        val predicate = LesserThan(10)
+        val predicate = Greater(10)
         predicate.isRefined(10) shouldBe false
     }
 

@@ -51,6 +51,6 @@ Construct new predicates using delegation:
 class UserID : Predicate<Int> by Positive()
 val userID = 443812 refined UserID()
 
-class Percent : Predicate<Int> by And(GreaterThanOrEqualTo(0), LesserThanOrEqualTo(100))
+class Percent : Predicate<Int> by And(GreaterOrEqual(0), LessOrEqual(100))
 val percent = 45 refined Percent()
 ```
