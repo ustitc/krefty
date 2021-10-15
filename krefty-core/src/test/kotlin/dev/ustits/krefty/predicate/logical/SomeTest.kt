@@ -5,23 +5,23 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.forAll
 
-class AndTest : StringSpec({
+class SomeTest : StringSpec({
 
-    "gives logical AND of two predicated" {
+    "gives logical OR of two predicated" {
         forAll<Boolean, Boolean> { a, b ->
-            val predicate = And(Predicate.Stub(a), Predicate.Stub<Int>(b))
-            predicate.isRefined(10) == a and b
+            val predicate = Some(Predicate.Stub(a), Predicate.Stub<Int>(b))
+            predicate.isRefined(10) == a or b
         }
     }
 
-    "returns false if any predicate is false" {
+    "returns true if any predicate is true" {
         val predicates = listOf(
-            Predicate.Stub<String>(true),
+            Predicate.Stub<String>(false),
             Predicate.Stub(false),
             Predicate.Stub(true)
         )
-        val and = And(predicates)
-        and.isRefined("") shouldBe false
+        val some = Some(predicates)
+        some.isRefined("") shouldBe true
     }
 
 })

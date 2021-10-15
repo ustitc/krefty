@@ -49,7 +49,18 @@ Construct new predicates using delegation:
 ```kotlin
 class UserID : Predicate<Int> by Positive()
 val userID = 443812 refined UserID()
+```
 
-class Percent : Predicate<Int> by And(GreaterOrEqual(0), LessOrEqual(100))
+Combine predicates using `and`, `or` functions
+
+```kotlin
+class Percent : Predicate<Int> by GreaterOrEqual(0) and LessOrEqual(100)
+val percent = 45 refined Percent()
+```
+
+Or by using `All` and `Some` classes
+
+```kotlin
+class Percent : Predicate<Int> by All(GreaterOrEqual(0), LessOrEqual(100))
 val percent = 45 refined Percent()
 ```

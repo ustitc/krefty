@@ -6,6 +6,7 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.property.forAll
 
 class DSLTest : StringSpec({
 
@@ -39,6 +40,20 @@ class DSLTest : StringSpec({
     "refinedOrNull returns null if can't refine" {
         val result = "test" refinedOrNull Predicate.Stub(false)
         result shouldBe null
+    }
+
+    "and constructs predicate returning logical AND of predicates" {
+        forAll<Boolean, Boolean> { a, b ->
+            val predicate = Predicate.Stub<Any>(a) and Predicate.Stub(b)
+            predicate.isRefined(Any()) == a and b
+        }
+    }
+
+    "or constructs predicate returning logical OR of predicates" {
+        forAll<Boolean, Boolean> { a, b ->
+            val predicate = Predicate.Stub<Any>(a) or Predicate.Stub(b)
+            predicate.isRefined(Any()) == a or b
+        }
     }
 
 })

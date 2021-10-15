@@ -2,7 +2,7 @@ package dev.ustits.krefty.predicate.logical
 
 import dev.ustits.krefty.core.Predicate
 
-class And<P : Predicate<T>, T>(private val predicates: List<P>) : Predicate<T> {
+class All<P : Predicate<T>, T>(private val predicates: List<P>) : Predicate<T> {
 
     @Suppress("SpreadOperator")
     constructor(head: P, vararg tail: P) : this(listOf(head, *tail))
