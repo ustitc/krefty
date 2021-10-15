@@ -1,6 +1,6 @@
 package dev.ustits.krefty.predicate.ints
 
 import dev.ustits.krefty.core.Predicate
-import dev.ustits.krefty.predicate.logical.Or
+import dev.ustits.krefty.dsl.or
 
-class GreaterOrEqual(value: Int) : Predicate<Int> by Or(Greater(value), Equal(value))
+class GreaterOrEqual(value: Int) : Predicate<Int> by Greater(value) or Equal(value)

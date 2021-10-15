@@ -1,6 +1,6 @@
 package dev.ustits.krefty.predicate.ints
 
 import dev.ustits.krefty.core.Predicate
-import dev.ustits.krefty.predicate.logical.Or
+import dev.ustits.krefty.dsl.or
 
-class LessOrEqual(value: Int) : Predicate<Int> by Or(Less(value), Equal(value))
+class LessOrEqual(value: Int) : Predicate<Int> by Less(value) or Equal(value)
