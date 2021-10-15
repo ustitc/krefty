@@ -51,16 +51,22 @@ class UserID : Predicate<Int> by Positive()
 val userID = 443812 refined UserID()
 ```
 
-Combine predicates using `and`, `or` functions
+Combine predicates using `and`, `or` functions:
 
 ```kotlin
 class Percent : Predicate<Int> by GreaterOrEqual(0) and LessOrEqual(100)
 val percent = 45 refined Percent()
 ```
 
-Or by using `All` and `Some` classes
+Or by using `All` and `Some` classes:
 
 ```kotlin
 class Percent : Predicate<Int> by All(GreaterOrEqual(0), LessOrEqual(100))
 val percent = 45 refined Percent()
+```
+
+Invert predicates with `Not`:
+
+```kotlin
+class NotPercent : Predicate<Int> by Not(Percent())
 ```
