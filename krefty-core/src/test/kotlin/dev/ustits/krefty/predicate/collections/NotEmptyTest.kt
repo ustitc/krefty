@@ -10,13 +10,13 @@ import io.kotest.property.forAll
 class NotEmptyTest : StringSpec({
 
     "returns false if list is empty" {
-        val predicate = NotEmpty<List<String>, String>()
+        val predicate = NotEmpty<List<String>>()
         predicate.isRefined(emptyList()) shouldBe false
     }
 
     "returns true if list is not empty" {
         forAll(Arb.list(Arb.string(), 1..100)) {
-            val predicate = NotEmpty<List<String>, String>()
+            val predicate = NotEmpty<List<String>>()
             predicate.isRefined(it)
         }
     }
