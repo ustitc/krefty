@@ -1,6 +1,6 @@
 package dev.ustits.krefty.core
 
-interface Predicate<T> {
+interface Predicate<in T> {
 
     fun isRefined(value: T): Boolean
 
