@@ -1,6 +1,6 @@
 package dev.ustits.krefty.predicate.ints
 
 import dev.ustits.krefty.core.Predicate
-import dev.ustits.krefty.predicate.logical.Not
+import dev.ustits.krefty.dsl.not
 
-class Odd : Predicate<Int> by Not(Even())
+class Odd : Predicate<Int> by !Even()

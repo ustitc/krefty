@@ -4,6 +4,7 @@ import dev.ustits.krefty.core.EagerRefined
 import dev.ustits.krefty.core.Predicate
 import dev.ustits.krefty.core.Refined
 import dev.ustits.krefty.predicate.logical.All
+import dev.ustits.krefty.predicate.logical.Not
 import dev.ustits.krefty.predicate.logical.Some
 
 infix fun <P : Predicate<T>, T> T.refined(predicate: P): Refined<P, T> {
@@ -24,4 +25,8 @@ infix fun <T> Predicate<T>.and(predicate: Predicate<T>): Predicate<T> {
 
 infix fun <T> Predicate<T>.or(predicate: Predicate<T>): Predicate<T> {
     return Some(listOf(this, predicate))
+}
+
+operator fun <T> Predicate<T>.not(): Not<Predicate<T>, T> {
+    return Not(this)
 }

@@ -65,8 +65,10 @@ class Percent : Predicate<Int> by All(GreaterOrEqual(0), LessOrEqual(100))
 val percent = 45 refined Percent()
 ```
 
-Invert predicates with `Not`:
+Invert predicates with `!` function or `Not` class:
 
 ```kotlin
+class NotPercent : Predicate<Int> by !Percent()
+// or
 class NotPercent : Predicate<Int> by Not(Percent())
 ```
