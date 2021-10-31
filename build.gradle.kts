@@ -61,34 +61,32 @@ subprojects {
             }
         }
 
-        publications {
-            create<MavenPublication>("kreftyLib") {
-                artifact(javadocJar.get())
-                pom {
-                    name.set("krefty")
-                    description.set("Refined types for Kotlin")
-                    url.set("https://github.com/ustits/krefty")
+        publications.withType<MavenPublication> {
+            artifact(javadocJar.get())
+            pom {
+                name.set("krefty")
+                description.set("Refined types for Kotlin")
+                url.set("https://github.com/ustits/krefty")
 
-                    licenses {
-                        license {
-                            name.set("MIT")
-                            url.set("https://mit-license.org")
-                        }
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://mit-license.org")
                     }
+                }
 
-                    developers {
-                        developer {
-                            id.set("ustits")
-                            name.set("Ruslan Ustits")
-                            email.set("ustitsruslan@gmail.com")
-                        }
+                developers {
+                    developer {
+                        id.set("ustits")
+                        name.set("Ruslan Ustits")
+                        email.set("ustitsruslan@gmail.com")
                     }
+                }
 
-                    scm {
-                        connection.set("scm:git:git://github.com/ustits/krefty.git")
-                        developerConnection.set("scm:git:ssh://github.com:ustits/krefty.git")
-                        url.set("http://github.com/ustits/krefty/tree/main")
-                    }
+                scm {
+                    connection.set("scm:git:git://github.com/ustits/krefty.git")
+                    developerConnection.set("scm:git:ssh://github.com:ustits/krefty.git")
+                    url.set("http://github.com/ustits/krefty/tree/main")
                 }
             }
         }
