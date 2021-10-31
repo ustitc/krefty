@@ -1,6 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.5.30" apply false
-    id("java-library")
+    kotlin("multiplatform") version "1.5.31" apply false
     id("maven-publish")
     id("signing")
     id("io.gitlab.arturbosch.detekt") version "1.18.1" apply false
@@ -8,18 +7,17 @@ plugins {
 
 subprojects {
 
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "java-library")
+    apply(plugin = "org.jetbrains.kotlin.multiplatform")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
     apply(plugin = "io.gitlab.arturbosch.detekt")
 
     group = "dev.ustits.krefty"
     version = Ci.version
-    java.sourceCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenCentral()
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
     tasks.withType<Test> {
@@ -34,9 +32,8 @@ subprojects {
         jvmTarget = "1.8"
     }
 
-    java {
-        withJavadocJar()
-        withSourcesJar()
+    val javadocJar by tasks.registering(Jar::class) {
+        archiveClassifier.set("javadoc")
     }
 
     signing {
@@ -66,7 +63,7 @@ subprojects {
 
         publications {
             create<MavenPublication>("kreftyLib") {
-                from(components["java"])
+                artifact(javadocJar.get())
                 pom {
                     name.set("krefty")
                     description.set("Refined types for Kotlin")
@@ -96,13 +93,4 @@ subprojects {
             }
         }
     }
-
-    val kotestVersion = "4.6.3"
-
-    dependencies {
-        testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-        testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-        testImplementation("io.kotest:kotest-property:$kotestVersion")
-    }
-
 }
