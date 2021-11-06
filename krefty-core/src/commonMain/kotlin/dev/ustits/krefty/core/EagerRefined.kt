@@ -4,14 +4,10 @@ internal class EagerRefined<P : Predicate<T>, T> private constructor(private val
 
     constructor(
         predicate: P,
-        value: T,
-        onError: (T) -> Throwable = { RefinementException("Value $it doesn't match the predicate") }
+        value: T
     ) : this(
-        if (predicate.isRefined(value)) {
-            value
-        } else {
-            throw onError.invoke(value)
-        }
+        require(predicate.isRefined(value)) { "Value $value doesn't match the predicate" }
+            .let { value }
     )
 
     override val unrefined: T

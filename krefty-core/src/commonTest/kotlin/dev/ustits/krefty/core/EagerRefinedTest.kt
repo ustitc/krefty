@@ -17,7 +17,7 @@ class EagerRefinedTest : StringSpec({
 
     "incorrect refinement throws error" {
         checkAll<String> {
-            shouldThrow<RefinementException> {
+            shouldThrow<IllegalArgumentException> {
                 EagerRefined(Predicate.Stub(false), it)
             }
         }
