@@ -1,4 +1,6 @@
-# Krefty - refined types for Kotlin
+![Kotest](docs/krefty.png)
+
+---
 
 [![CI](https://github.com/ustits/krefty/actions/workflows/build.yml/badge.svg)](https://github.com/ustits/krefty/actions/workflows/build.yml)
 [![Licence](https://img.shields.io/github/license/ustits/krefty)](https://github.com/ustits/krefty/blob/main/LICENSE)
