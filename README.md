@@ -1,4 +1,4 @@
-![Kotest](docs/krefty.png)
+![Krefty](docs/krefty.png)
 
 ---
 
