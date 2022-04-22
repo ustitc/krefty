@@ -7,9 +7,12 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.ustits.krefty/krefty-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.ustits.krefty/krefty-core)
 
 Krefty is a tool for constructing concrete (refined) types specific for your domain. It uses refinement type theory,
-i.e. types wrapping a predicate and a value which satisfies it. Inspired by implementations
-in [haskell](https://github.com/nikita-volkov/refined)
+i.e. types wrapping a predicate and a value which satisfies it. 
+For DDD users refined types can be viewed as an alternative to value objects or [whole objects](http://c2.com/ppr/checks.html#1). 
+Inspired by implementations in [haskell](https://github.com/nikita-volkov/refined)
 and [scala](https://github.com/fthomas/refined).
+
+Also check out [values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) which solves the same problem. 
 
 ## Getting started
 
