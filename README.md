@@ -12,7 +12,7 @@ For DDD users refined types can be viewed as an alternative to value objects or 
 Inspired by implementations in [haskell](https://github.com/nikita-volkov/refined)
 and [scala](https://github.com/fthomas/refined).
 
-Also check out [values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) which solves the same problem. 
+Also check out [arrow-exact](https://github.com/arrow-kt/arrow-exact) and [values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) which solve the same problem. 
 
 ## Getting started
 
@@ -22,27 +22,24 @@ implementation("dev.ustits.krefty:krefty-core:<latest_version>")
 
 ## Usage
 
-To refine a type use `refined` function with a predicate:
+Use `refine` and pass a desired predicate. It will return a `Refined` type which holds a value if it 
+matches a predicate or an exception if not:
 
 ```kotlin
-val name = "Krefty" refined NotBlank()
+val name = "Krefty" refine NotBlank()
+name.getOrThrow() // "Krefty"
+
+val version = "" refine NotBlank()
+name.getOrThrow() // RefinementException
 ```
 
-Function will ensure that the value `"Krefty"` satisfies the predicate `NotBlank`. If not it will cause an error. 
-
-Call `unrefined` to get the value back:
-
-```kotlin
-name.unrefined // "Krefty"
-```
-
-A newly created object can be used to construct new types, for example, 
+`Refined` type can be used to construct new types, for example, 
 by passing it in the constructor:
 
 ```kotlin
 class NotBlankString private constructor(private val value: String) {
 
-    constructor(refined: Refined<NotBlank, String>) : this(refined.unrefined)
+    constructor(refined: Refined<NotBlank, String>) : this(refined.getOrThrow())
 
 }
 
@@ -53,21 +50,21 @@ Construct new predicates using delegation:
 
 ```kotlin
 class UserID : Predicate<Int> by Positive()
-val userID = 443812 refined UserID()
+val userID = 443812 refine UserID()
 ```
 
 Combine predicates using `and`, `or` functions:
 
 ```kotlin
 class Percent : Predicate<Int> by GreaterOrEqual(0) and LessOrEqual(100)
-val percent = 45 refined Percent()
+val percent = 45 refine Percent()
 ```
 
 Or by using `All` and `Some` classes:
 
 ```kotlin
 class Percent : Predicate<Int> by All(GreaterOrEqual(0), LessOrEqual(100))
-val percent = 45 refined Percent()
+val percent = 45 refine Percent()
 ```
 
 Invert predicates with `!` function or `Not` class:

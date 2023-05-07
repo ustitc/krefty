@@ -16,14 +16,14 @@ class SizeTest : StringSpec({
     }
 
     "returns false if list is smaller" {
-        forAll(Arb.map(Arb.int(), Arb.int(), minSize = 10)) {
+        forAll(Arb.map(Arb.int(), Arb.int(), minSize = 10, includeEmpty = false)) {
             val predicate = Size<Map<Int, Int>>(it.size / 2)
             !predicate.isRefined(it)
         }
     }
 
     "returns false if list is larger" {
-        forAll(Arb.map(Arb.int(), Arb.int(), minSize = 10)) {
+        forAll(Arb.map(Arb.int(), Arb.int(), minSize = 10, includeEmpty = false)) {
             val predicate = Size<Map<Int, Int>>(it.size * 2)
             !predicate.isRefined(it)
         }

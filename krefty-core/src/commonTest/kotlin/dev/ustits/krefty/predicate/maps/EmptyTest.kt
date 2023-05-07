@@ -15,7 +15,7 @@ class EmptyTest : StringSpec({
     }
 
     "returns false if map is not empty" {
-        forAll(Arb.map(Arb.string(), Arb.string(), minSize = 1)) {
+        forAll(Arb.map(Arb.string(), Arb.string(), minSize = 1, includeEmpty = false)) {
             val predicate = Empty<Map<String, String>>()
             !predicate.isRefined(it)
         }

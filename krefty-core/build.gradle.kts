@@ -1,5 +1,5 @@
 plugins {
-    id("io.kotest.multiplatform") version "5.0.0.5"
+    id("io.kotest.multiplatform") version "5.6.0"
 }
 
 //java.sourceCompatibility = JavaVersion.VERSION_1_8
@@ -10,7 +10,7 @@ kotlin {
         nodejs()
     }
 
-    val kotestVersion = "5.0.0.M3"
+    val kotestVersion = "5.6.1"
 
     sourceSets {
         val commonMain by getting

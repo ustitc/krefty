@@ -1,5 +1,6 @@
 .gradle
 .idea
+kotlin-js-store
 build
 
 todo.md

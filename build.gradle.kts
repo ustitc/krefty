@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform") version "1.5.31" apply false
+    kotlin("multiplatform") version "1.8.21" apply false
     id("maven-publish")
     id("signing")
-    id("io.gitlab.arturbosch.detekt") version "1.18.1" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.22.0" apply false
 }
 
 subprojects {

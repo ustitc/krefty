@@ -13,6 +13,14 @@ internal class EagerRefined<P : Predicate<T>, T> private constructor(private val
     override val unrefined: T
         get() = value
 
+    override fun getOrElse(block: (T) -> T): T = value
+
+    override fun getOrThrow(): T = value
+
+    override fun getOrNull(): T? = value
+
+    override fun getOrError(): Result<T> = Result.success(value)
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
