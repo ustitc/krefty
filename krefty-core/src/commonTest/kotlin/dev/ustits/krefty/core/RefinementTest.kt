@@ -71,4 +71,28 @@ class RefinementTest : StringSpec ({
         }
         refinement.getOrNull() shouldBe null
     }
+
+    "keeps value if matches filter" {
+        val refinement = refine("oil").filter {
+            it.length > 1
+        }
+        refinement.getOrThrow() shouldBe "oil"
+    }
+
+    "doesn't keep value if not matches filter" {
+        val refinement = refine("oil").filter {
+            it.length > 10
+        }
+        refinement.getOrNull() shouldBe null
+    }
+
+    "keeps value if matches filter by predicate" {
+        val refinement = refine("oil").filter(NotBlank())
+        refinement.getOrThrow() shouldBe "oil"
+    }
+
+    "doesn't keep value if not matches filter by predicate" {
+        val refinement = refine("oil").filter(Blank())
+        refinement.getOrNull() shouldBe null
+    }
 })

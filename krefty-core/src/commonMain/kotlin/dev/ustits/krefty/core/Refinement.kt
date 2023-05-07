@@ -30,6 +30,14 @@ interface Refinement<T> {
 
     fun <R> flatMap(block: (T) -> Refinement<R>): Refinement<R>
 
+    fun filter(block: (T) -> Boolean): Refinement<T>
+
+    fun filter(predicate: Predicate<T>): Refinement<T>
+
+}
+
+fun <T> refine(value: T): Refinement<T> {
+    return LazyRefinement(Predicate.Stub(true), value)
 }
 
 fun <T, P : Predicate<T>> refine(predicate: P, value: T): Refinement<T> {

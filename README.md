@@ -33,21 +33,12 @@ val version = refine(NotBlank(), "")
 version.getOrThrow() // RefinementException
 ```
 
-`Refinement` type can be used to construct new types, for example, 
-by passing it in the constructor:
-
-```kotlin
-class NotBlankString private constructor(private val value: String) {
-    constructor(refinement: Refinement<String>) : this(refinement.getOrThrow())
-}
-
-val notBlank = NotBlankString(refined)
-```
-
 `Refinement` can be used in the same way as Collections, Either and other monads:
 
 ```kotlin
-refine(NotBlank(), "Krefty")
+refine("Krefty")
+    .filter(NotBlank())
+    .filter { it.length > 3 }
     .map { NotBlankString(it) }
     .flatMap { refine(UserNamePredicate(), it) }
 ```
