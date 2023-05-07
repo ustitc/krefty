@@ -14,3 +14,7 @@ interface Refined<P : Predicate<T>, T> {
     fun getOrError(): Result<T>
 
 }
+
+fun <T, P : Predicate<T>> refine(predicate: P, value: T): Refined<P, T> {
+    return LazyRefined(predicate, value)
+}

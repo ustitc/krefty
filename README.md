@@ -26,10 +26,10 @@ Use `refine` and pass a desired predicate. It will return a `Refined` type which
 matches a predicate or an exception if not:
 
 ```kotlin
-val name = "Krefty" refine NotBlank()
+val name = refine(NotBlank(), "Krefty") 
 name.getOrThrow() // "Krefty"
 
-val version = "" refine NotBlank()
+val version = refine(NotBlank(), "")
 version.getOrThrow() // RefinementException
 ```
 
@@ -55,7 +55,7 @@ class UserID : Predicate<Int> {
 // or
 class UserID : Predicate<Int> by Positive()
 
-val userID = 443812 refine UserID()
+val userID = refine(UserID(), 443812) 
 ```
 
 Combine predicates using `and`, `or` functions or by `All` and `Some` classes:

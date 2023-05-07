@@ -1,6 +1,5 @@
 package dev.ustits.krefty.core
 
-import dev.ustits.krefty.dsl.refine
 import dev.ustits.krefty.predicate.string.Blank
 import dev.ustits.krefty.predicate.string.NotBlank
 import io.kotest.assertions.throwables.shouldThrow
@@ -9,10 +8,10 @@ import io.kotest.matchers.result.shouldBeFailure
 import io.kotest.matchers.result.shouldBeSuccess
 import io.kotest.matchers.shouldBe
 
-class LazyRefinedTest : StringSpec ({
+class RefinedTest : StringSpec ({
 
     "returns value" {
-        val refined = "oil" refine NotBlank()
+        val refined = refine(NotBlank(), "oil")
         refined.getOrThrow() shouldBe "oil"
         refined.getOrNull() shouldBe "oil"
         refined.getOrElse { "gas" } shouldBe "oil"
@@ -20,22 +19,22 @@ class LazyRefinedTest : StringSpec ({
     }
 
     "returns default value" {
-        val refined = "oil" refine Blank()
+        val refined = refine(Blank(), "oil")
         refined.getOrElse { "$it & gas" } shouldBe "oil & gas"
     }
 
     "returns null" {
-        val refined = "" refine NotBlank()
+        val refined = refine(NotBlank(), "")
         refined.getOrNull() shouldBe null
     }
 
     "returns error" {
-        val refined = "" refine NotBlank()
+        val refined = refine(NotBlank(), "")
         refined.getOrError() shouldBeFailure RefinementException("")
     }
 
     "throws exception" {
-        val refined = "" refine NotBlank()
+        val refined = refine(NotBlank(), "")
         shouldThrow<RefinementException> {
             refined.getOrThrow()
         }
