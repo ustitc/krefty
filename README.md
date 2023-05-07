@@ -44,6 +44,14 @@ class NotBlankString private constructor(private val value: String) {
 val notBlank = NotBlankString(refined)
 ```
 
+`Refinement` can be used in the same way as Collections, Either and other monads:
+
+```kotlin
+refine(NotBlank(), "Krefty")
+    .map { NotBlankString(it) }
+    .flatMap { refine(UserNamePredicate(), it) }
+```
+
 ### Predicates
 
 Krefty is shipped with predefined `Predicate`s but it strongly encouraged to make domain specific ones. 

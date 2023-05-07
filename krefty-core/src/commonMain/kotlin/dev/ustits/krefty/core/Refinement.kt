@@ -18,13 +18,17 @@ interface Refined<P : Predicate<T>, T> {
 
 interface Refinement<T> {
 
-    fun getOrElse(block: (T) -> T): T
+    fun getOrElse(block: () -> T): T
 
     fun getOrThrow(): T
 
     fun getOrNull(): T?
 
     fun getOrError(): Result<T>
+
+    fun <R> map(block: (T) -> R): Refinement<R>
+
+    fun <R> flatMap(block: (T) -> Refinement<R>): Refinement<R>
 
 }
 
