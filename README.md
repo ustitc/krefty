@@ -22,7 +22,7 @@ implementation("dev.ustits.krefty:krefty-core:<latest_version>")
 
 ## Usage
 
-Use `refine` and pass a desired predicate. It will return a `Refined` type which holds a value if it 
+Use `refine` and pass a desired predicate. It will return a `Refinement` type which holds a value if it 
 matches a predicate or an exception if not:
 
 ```kotlin
@@ -33,12 +33,12 @@ val version = refine(NotBlank(), "")
 version.getOrThrow() // RefinementException
 ```
 
-`Refined` type can be used to construct new types, for example, 
+`Refinement` type can be used to construct new types, for example, 
 by passing it in the constructor:
 
 ```kotlin
 class NotBlankString private constructor(private val value: String) {
-    constructor(refined: Refined<NotBlank, String>) : this(refined.getOrThrow())
+    constructor(refinement: Refinement<String>) : this(refinement.getOrThrow())
 }
 
 val notBlank = NotBlankString(refined)

@@ -1,9 +1,9 @@
 package dev.ustits.krefty.core
 
-internal class LazyRefined<P : Predicate<T>, T> internal constructor(
+internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
     private val predicate: P,
     private val value: T
-) : Refined<P, T> {
+) : Refined<P, T>, Refinement<T> {
 
     override val unrefined: T
         get() = value
@@ -39,7 +39,7 @@ internal class LazyRefined<P : Predicate<T>, T> internal constructor(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
-        other as LazyRefined<*, *>
+        other as LazyRefinement<*, *>
 
         if (value != other.value) return false
 
