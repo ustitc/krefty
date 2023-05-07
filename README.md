@@ -30,7 +30,7 @@ val name = "Krefty" refine NotBlank()
 name.getOrThrow() // "Krefty"
 
 val version = "" refine NotBlank()
-name.getOrThrow() // RefinementException
+version.getOrThrow() // RefinementException
 ```
 
 `Refined` type can be used to construct new types, for example, 
@@ -38,32 +38,33 @@ by passing it in the constructor:
 
 ```kotlin
 class NotBlankString private constructor(private val value: String) {
-
     constructor(refined: Refined<NotBlank, String>) : this(refined.getOrThrow())
-
 }
 
 val notBlank = NotBlankString(refined)
 ```
 
-Construct new predicates using delegation:
+### Predicates
+
+Krefty is shipped with predefined `Predicate`s but it strongly encouraged to make domain specific ones. 
+New predicates can be made by implementing `Predicate` or by using delegation:
 
 ```kotlin
+class UserID : Predicate<Int> {
+}
+// or
 class UserID : Predicate<Int> by Positive()
+
 val userID = 443812 refine UserID()
 ```
 
-Combine predicates using `and`, `or` functions:
+Combine predicates using `and`, `or` functions or by `All` and `Some` classes:
 
 ```kotlin
 class Percent : Predicate<Int> by GreaterOrEqual(0) and LessOrEqual(100)
-val percent = 45 refine Percent()
-```
-
-Or by using `All` and `Some` classes:
-
-```kotlin
+// or
 class Percent : Predicate<Int> by All(GreaterOrEqual(0), LessOrEqual(100))
+
 val percent = 45 refine Percent()
 ```
 
