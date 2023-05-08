@@ -1,16 +1,12 @@
 plugins {
-    kotlin("multiplatform") version "1.8.21" apply false
     id("maven-publish")
     id("signing")
-    id("io.gitlab.arturbosch.detekt") version "1.22.0" apply false
 }
 
-subprojects {
+allprojects {
 
-    apply(plugin = "org.jetbrains.kotlin.multiplatform")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
-    apply(plugin = "io.gitlab.arturbosch.detekt")
 
     group = "dev.ustits.krefty"
     version = Ci.version
@@ -22,14 +18,6 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
-    }
-
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-
-    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        jvmTarget = "1.8"
     }
 
     val javadocJar by tasks.registering(Jar::class) {
