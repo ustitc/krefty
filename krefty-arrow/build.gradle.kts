@@ -11,12 +11,18 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(project(":krefty-core"))
+                implementation(libs.arrow.core)
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotest.engine)
                 implementation(libs.kotest.assertions)
                 implementation(libs.kotest.property)
+                implementation(libs.kotest.arrow)
             }
         }
         val jvmMain by getting
