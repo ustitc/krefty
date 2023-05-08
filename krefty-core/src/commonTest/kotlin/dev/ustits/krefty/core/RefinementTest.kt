@@ -95,4 +95,14 @@ class RefinementTest : StringSpec ({
         val refinement = refine("oil").filter(Blank())
         refinement.getOrNull() shouldBe null
     }
+
+    "is refined if matches predicate" {
+        val refinement = refine(NotBlank(), "oil")
+        refinement.isRefined() shouldBe true
+    }
+
+    "is not refined if doesn't matche predicate" {
+        val refinement = refine(NotBlank(), "")
+        refinement.isRefined() shouldBe false
+    }
 })

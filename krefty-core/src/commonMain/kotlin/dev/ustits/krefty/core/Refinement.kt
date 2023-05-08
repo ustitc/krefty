@@ -34,6 +34,8 @@ interface Refinement<T> {
 
     fun filter(predicate: Predicate<T>): Refinement<T>
 
+    fun isRefined(): Boolean
+
 }
 
 fun <T> refine(value: T): Refinement<T> {

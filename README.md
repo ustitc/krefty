@@ -27,10 +27,12 @@ matches a predicate or an exception if not:
 
 ```kotlin
 val name = refine(NotBlank(), "Krefty") 
-name.getOrThrow() // "Krefty"
+name.getOrThrow()       // "Krefty"
+name.isRefined()        // true
 
 val version = refine(NotBlank(), "")
-version.getOrThrow() // RefinementException
+version.getOrThrow()    // throws RefinementException
+version.isRefined()     // false
 ```
 
 `Refinement` can be used in the same way as Collections, Either and other monads:

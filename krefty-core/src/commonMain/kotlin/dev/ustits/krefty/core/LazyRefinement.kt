@@ -17,14 +17,14 @@ internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
     }
 
     override fun getOrThrow(): T {
-        if (!predicate.isRefined(value)) {
+        if (!isRefined()) {
             throw RefinementException(value)
         }
         return value
     }
 
     override fun getOrNull(): T? {
-        return if (predicate.isRefined(value)) {
+        return if (isRefined()) {
             value
         } else {
             null
@@ -44,15 +44,15 @@ internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
     }
 
     override fun <R> flatMap(block: (T) -> Refinement<R>): Refinement<R> {
-        return if (getOrNull() == null) {
-            Error(RefinementException(value))
-        } else {
+        return if (isRefined()) {
             block(value)
+        } else {
+            Error(RefinementException(value))
         }
     }
 
     override fun filter(block: (T) -> Boolean): Refinement<T> {
-        return if (predicate.isRefined(value) && block(value)) {
+        return if (isRefined() && block(value)) {
             this
         } else {
             Error(RefinementException(value))
@@ -62,6 +62,8 @@ internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
     override fun filter(predicate: Predicate<T>): Refinement<T> {
         return LazyRefinement(this.predicate and predicate, value)
     }
+
+    override fun isRefined(): Boolean = predicate.isRefined(value)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -91,6 +93,7 @@ internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
             Error(RefinementException(value))
         }
         override fun filter(predicate: Predicate<T>): Refinement<T> = LazyRefinement(predicate, value)
+        override fun isRefined(): Boolean = true
     }
 
     private class Error<T>(private val exception: RefinementException) : Refinement<T> {
@@ -102,5 +105,6 @@ internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
         override fun <R> flatMap(block: (T) -> Refinement<R>): Refinement<R> = Error(exception)
         override fun filter(block: (T) -> Boolean): Refinement<T> = this
         override fun filter(predicate: Predicate<T>): Refinement<T> = this
+        override fun isRefined(): Boolean = false
     }
 }
