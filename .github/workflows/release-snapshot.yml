@@ -1,0 +1,35 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "The snapshot version"
+        required: true
+      branch:
+        description: "The branch to release from"
+        required: true
+        default: 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: deploy to sonatype
+        run: ./gradlew publish
+        env:
+          SNAPSHOT_VERSION: ${{ github.event.inputs.version }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
