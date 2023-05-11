@@ -11,40 +11,32 @@ class RefinementTest : StringSpec({
 
     "returns right if matches condition" {
         val result = refine("Krefty") {
-            ensure(it.isNotBlank()) {
-                BlankString
-            }
-            NotBlankString(it)
+            ensure(value.isNotBlank()) { BlankString }
+            NotBlankString(value)
         }
         result shouldBeRight NotBlankString("Krefty")
     }
 
     "returns left if doesn't match condition" {
         val result = refine("") {
-            ensure(it.isNotBlank()) {
-                BlankString
-            }
-            NotBlankString(it)
+            ensure(value.isNotBlank()) { BlankString }
+            NotBlankString(value)
         }
         result shouldBeLeft BlankString
     }
 
     "returns right if matches predicate" {
         val result = refine("Krefty") {
-            refine(NotBlank(), it) {
-                BlankString
-            }
-            NotBlankString(it)
+            ensure(NotBlank()) { BlankString }
+            NotBlankString(value)
         }
         result shouldBeRight NotBlankString("Krefty")
     }
 
     "returns left if doesn't match predicate" {
         val result = refine("") {
-            refine(NotBlank(), it) {
-                BlankString
-            }
-            NotBlankString(it)
+            ensure(NotBlank()) { BlankString }
+            NotBlankString(value)
         }
         result shouldBeLeft BlankString
     }
