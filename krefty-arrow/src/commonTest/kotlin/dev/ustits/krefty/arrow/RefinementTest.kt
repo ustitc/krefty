@@ -40,6 +40,16 @@ class RefinementTest : StringSpec({
         }
         result shouldBeLeft BlankString
     }
+
+    "returns right" {
+        val result = dev.ustits.krefty.core.refine(NotBlank(), "test").getOrEither()
+        result shouldBeRight "test"
+    }
+
+    "returns left" {
+        val result = dev.ustits.krefty.core.refine(NotBlank(), "").getOrEither()
+        result shouldBeLeft RefinementError
+    }
 })
 
 object BlankString
