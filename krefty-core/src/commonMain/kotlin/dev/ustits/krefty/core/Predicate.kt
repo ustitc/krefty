@@ -4,6 +4,7 @@ import dev.ustits.krefty.predicate.logical.All
 import dev.ustits.krefty.predicate.logical.Not
 import dev.ustits.krefty.predicate.logical.Some
 
+@Deprecated(message = "For removal")
 fun interface Predicate<in T> {
 
     fun isRefined(value: T): Boolean

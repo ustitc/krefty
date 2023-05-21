@@ -1,16 +1,9 @@
 package dev.ustits.krefty.core
 
-internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
-    private val predicate: P,
-    private val value: T
-) : Refined<P, T>, Refinement<T> {
-
-    override val unrefined: T
-        get() = value
-
-    override fun getOrElse(block: (T) -> T): T {
-        return getOrNull() ?: block(value)
-    }
+internal class LazyRefinement<T> internal constructor(
+    private val value: T,
+    private val predicate: (T) -> Boolean
+) : Refinement<T> {
 
     override fun getOrElse(block: () -> T): T {
         return getOrNull() ?: block()
@@ -60,20 +53,21 @@ internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
     }
 
     override fun filter(predicate: Predicate<T>): Refinement<T> {
-        return LazyRefinement(this.predicate and predicate, value)
+        return LazyRefinement(value) {
+            predicate.isRefined(it) && this.predicate.invoke(it)
+        }
     }
 
-    override fun isRefined(): Boolean = predicate.isRefined(value)
+    override fun isRefined(): Boolean = predicate.invoke(value)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
 
-        other as LazyRefinement<*, *>
+        other as LazyRefinement<*>
 
         if (value != other.value) return false
-
-        return true
+        return predicate == other.predicate
     }
 
     override fun hashCode(): Int {
@@ -92,7 +86,8 @@ internal class LazyRefinement<P : Predicate<T>, T> internal constructor(
         } else {
             Error(RefinementException(value))
         }
-        override fun filter(predicate: Predicate<T>): Refinement<T> = LazyRefinement(predicate, value)
+
+        override fun filter(predicate: Predicate<T>): Refinement<T> = LazyRefinement(value) { predicate.isRefined(it) }
         override fun isRefined(): Boolean = true
     }
 

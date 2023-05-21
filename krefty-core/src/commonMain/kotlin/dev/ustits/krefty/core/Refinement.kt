@@ -32,6 +32,7 @@ interface Refinement<T> {
 
     fun filter(block: (T) -> Boolean): Refinement<T>
 
+    @Deprecated(message = "Use filter with (T) -> Boolean instead")
     fun filter(predicate: Predicate<T>): Refinement<T>
 
     fun isRefined(): Boolean
@@ -39,9 +40,17 @@ interface Refinement<T> {
 }
 
 fun <T> refine(value: T): Refinement<T> {
-    return LazyRefinement(Predicate.Stub(true), value)
+    return LazyRefinement(value) { true }
 }
 
+@Deprecated(
+    message = "Use function with (T) -> Boolean instead",
+    replaceWith = ReplaceWith("refine(T, (T) -> Boolean)")
+)
 fun <T, P : Predicate<T>> refine(predicate: P, value: T): Refinement<T> {
-    return LazyRefinement(predicate, value)
+    return LazyRefinement(value) { predicate.isRefined(it) }
+}
+
+fun <T> refine(value: T, predicate: (T) -> Boolean): Refinement<T> {
+    return LazyRefinement(value, predicate)
 }

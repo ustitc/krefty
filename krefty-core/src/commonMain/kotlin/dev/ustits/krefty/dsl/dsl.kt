@@ -1,7 +1,6 @@
 package dev.ustits.krefty.dsl
 
 import dev.ustits.krefty.core.EagerRefined
-import dev.ustits.krefty.core.LazyRefinement
 import dev.ustits.krefty.core.Predicate
 import dev.ustits.krefty.core.Refined
 import dev.ustits.krefty.predicate.logical.All
@@ -10,7 +9,7 @@ import dev.ustits.krefty.predicate.logical.Some
 
 @Deprecated(message = "Use refine() instead", replaceWith = ReplaceWith("refine()"))
 infix fun <P : Predicate<T>, T> T.refine(predicate: P): Refined<P, T> {
-    return LazyRefinement(predicate, this)
+    return EagerRefined(predicate, this)
 }
 
 @Deprecated(message = "Use refine() instead", replaceWith = ReplaceWith("refine()"))
