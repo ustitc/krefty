@@ -40,7 +40,7 @@ interface Refinement<T> {
 }
 
 fun <T> refine(value: T): Refinement<T> {
-    return LazyRefinement(value) { true }
+    return RefinementImpl(value) { true }
 }
 
 @Deprecated(
@@ -48,9 +48,9 @@ fun <T> refine(value: T): Refinement<T> {
     replaceWith = ReplaceWith("refine(T, (T) -> Boolean)")
 )
 fun <T, P : Predicate<T>> refine(predicate: P, value: T): Refinement<T> {
-    return LazyRefinement(value) { predicate.isRefined(it) }
+    return RefinementImpl(value) { predicate.isRefined(it) }
 }
 
 fun <T> refine(value: T, predicate: (T) -> Boolean): Refinement<T> {
-    return LazyRefinement(value, predicate)
+    return RefinementImpl(value, predicate)
 }
