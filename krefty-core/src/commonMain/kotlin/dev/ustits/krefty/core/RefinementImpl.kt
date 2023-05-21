@@ -42,6 +42,10 @@ internal class RefinementImpl<T> internal constructor(
             predicate.isRefined(it) && this.predicate.invoke(it)
         }
 
+    override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> = suspendRefine(value) {
+        predicate.invoke(value) && block.invoke(value)
+    }
+
     override fun isRefined(): Boolean = predicate.invoke(value)
 
     override fun equals(other: Any?): Boolean {
@@ -68,5 +72,6 @@ private class ErrorRefinement<T>(private val exception: RefinementException) : R
     override fun <R> flatMap(block: (T) -> Refinement<R>): Refinement<R> = ErrorRefinement(exception)
     override fun filter(block: (T) -> Boolean): Refinement<T> = this
     override fun filter(predicate: Predicate<T>): Refinement<T> = this
+    override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
     override fun isRefined(): Boolean = false
 }

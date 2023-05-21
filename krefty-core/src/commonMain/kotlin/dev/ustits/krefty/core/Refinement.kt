@@ -32,6 +32,8 @@ interface Refinement<T> {
 
     fun filter(block: (T) -> Boolean): Refinement<T>
 
+    fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T>
+
     @Deprecated(message = "Use filter with (T) -> Boolean instead")
     fun filter(predicate: Predicate<T>): Refinement<T>
 
