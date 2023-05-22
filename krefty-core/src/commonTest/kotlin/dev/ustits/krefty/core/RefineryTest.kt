@@ -8,7 +8,7 @@ import kotlin.jvm.JvmInline
 @JvmInline
 value class NotBlankString(private val value: String) {
 
-    companion object : Refinery<String, NotBlankString>, ResultRefinery<String, NotBlankString> {
+    companion object : ResultRefinery<String, NotBlankString>() {
         override fun refinement(value: String): Refinement<NotBlankString> {
             return refine(value)
                 .filter { it.isNotBlank() }

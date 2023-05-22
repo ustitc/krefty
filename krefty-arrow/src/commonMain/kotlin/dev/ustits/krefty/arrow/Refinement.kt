@@ -12,10 +12,8 @@ fun <A> Refinement<A>.getOrEither(): Either<RefinementError, A> {
     return getOrNull()?.right() ?: RefinementError.left()
 }
 
-fun <A, B> Refinery<A, B>.ofOrEither(value: A): Either<RefinementError, B> = refinement(value).getOrEither()
+abstract class EitherRefinery<A, B> : Refinery<A, B>() {
 
-interface EitherRefinery<A, B> : Refinery<A, B> {
-
-    fun from(value: A): Either<RefinementError, B> = ofOrEither(value)
+    fun from(value: A): Either<RefinementError, B> = refinement(value).getOrEither()
 
 }
