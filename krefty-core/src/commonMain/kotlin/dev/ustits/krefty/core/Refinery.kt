@@ -2,8 +2,6 @@ package dev.ustits.krefty.core
 
 abstract class Refinery<T, R> {
 
-    protected abstract fun refinement(value: T): Refinement<R>
-
     fun fromOrElse(value: T, default: R): R = fromOrElse(value) { default }
 
     fun fromOrElse(value: T, default: () -> R): R = refinement(value).getOrElse(default)
@@ -14,6 +12,11 @@ abstract class Refinery<T, R> {
 
     fun fromOrError(value: T): Result<R> = refinement(value).getOrError()
 
+    protected abstract fun Refinement<T>.refine(): Refinement<R>
+
+    internal fun refinement(value: T): Refinement<R> {
+        return refine(value).refine()
+    }
 }
 
 abstract class NullRefinery<T, R> : Refinery<T, R>() {

@@ -16,6 +16,8 @@ interface Refinement<T> {
 
     fun filter(block: (T) -> Boolean): Refinement<T>
 
+    fun filter(refinery: Refinery<T, *>): Refinement<T>
+
     fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T>
 
     @Deprecated(message = "Use filter with (T) -> Boolean instead")

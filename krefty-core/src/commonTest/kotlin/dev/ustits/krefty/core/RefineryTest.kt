@@ -6,37 +6,43 @@ import io.kotest.matchers.shouldBe
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class NotBlankString(private val value: String) {
+value class NotBlankString internal constructor(private val value: String) {
 
     companion object : ResultRefinery<String, NotBlankString>() {
-        override fun refinement(value: String): Refinement<NotBlankString> {
-            return refine(value)
-                .filter { it.isNotBlank() }
-                .map { NotBlankString(it) }
-        }
+        override fun Refinement<String>.refine() = filter { it.isNotBlank() }.map { NotBlankString(it) }
+    }
+}
+
+@JvmInline
+value class Name internal constructor(private val value: String) {
+
+    companion object : ResultRefinery<String, Name>() {
+        override fun Refinement<String>.refine() = filter { it.none { ch -> ch in '0'..'9' } }
+            .filter(NotBlankString)
+            .map { Name(it) }
     }
 }
 
 class RefineryTest : StringSpec({
 
     "returns value" {
-        NotBlankString.from("test") shouldBe Result.success(NotBlankString("test"))
-        NotBlankString.fromOrThrow("test") shouldBe NotBlankString("test")
-        NotBlankString.fromOrNull("test") shouldBe NotBlankString("test")
-        NotBlankString.fromOrError("test") shouldBe Result.success(NotBlankString("test"))
-        NotBlankString.fromOrElse("test", NotBlankString("fail")) shouldBe NotBlankString("test")
-        NotBlankString.fromOrElse("test") { NotBlankString("fail") } shouldBe NotBlankString("test")
+        Name.from("Scanlan") shouldBe Result.success(Name("Scanlan"))
+        Name.fromOrThrow("Scanlan") shouldBe Name("Scanlan")
+        Name.fromOrNull("Scanlan") shouldBe Name("Scanlan")
+        Name.fromOrError("Scanlan") shouldBe Result.success(Name("Scanlan"))
+        Name.fromOrElse("Scanlan", Name("fail")) shouldBe Name("Scanlan")
+        Name.fromOrElse("Scanlan") { Name("fail") } shouldBe Name("Scanlan")
     }
 
     "doesn't return value" {
-        NotBlankString.from("") shouldBe Result.failure<RefinementException>(RefinementException(""))
+        Name.from("Scan1an") shouldBe Result.failure<RefinementException>(RefinementException("Scan1an"))
         shouldThrow<RefinementException> {
-            NotBlankString.fromOrThrow("")
+            Name.fromOrThrow("Sc@Scan1an")
         }
-        NotBlankString.fromOrNull("") shouldBe null
-        NotBlankString.fromOrError("") shouldBe Result.failure<RefinementException>(RefinementException(""))
-        NotBlankString.fromOrElse("", NotBlankString("fail")) shouldBe NotBlankString("fail")
-        NotBlankString.fromOrElse("") { NotBlankString("fail") } shouldBe NotBlankString("fail")
+        Name.fromOrNull("Scan1an") shouldBe null
+        Name.fromOrError("Scan1an") shouldBe Result.failure<RefinementException>(RefinementException("Scan1an"))
+        Name.fromOrElse("Scan1an", Name("fail")) shouldBe Name("fail")
+        Name.fromOrElse("Scan1an") { Name("fail") } shouldBe Name("fail")
     }
 
 })

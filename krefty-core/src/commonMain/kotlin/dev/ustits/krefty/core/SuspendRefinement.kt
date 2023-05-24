@@ -18,6 +18,8 @@ interface SuspendRefinement<T> {
 
     fun filter(block: (T) -> Boolean): SuspendRefinement<T>
 
+    fun filter(refinery: Refinery<T, *>): SuspendRefinement<T>
+
     fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T>
 
 }

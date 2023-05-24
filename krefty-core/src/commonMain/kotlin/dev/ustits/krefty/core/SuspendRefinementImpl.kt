@@ -45,6 +45,12 @@ internal class SuspendRefinementImpl<T>(
         }
     }
 
+    override fun filter(refinery: Refinery<T, *>): SuspendRefinement<T> {
+        return SuspendRefinementImpl(value) {
+            this.predicate.invoke(value) && refinery.refinement(value).isRefined()
+        }
+    }
+
     override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> {
         return SuspendRefinementImpl(value) {
             this.predicate.invoke(value) && block.invoke(value)
@@ -76,6 +82,11 @@ private class WrappingSuspendRefinement<T>(
             source.invoke().filter(block)
         }
 
+    override fun filter(refinery: Refinery<T, *>): SuspendRefinement<T> =
+        WrappingSuspendRefinement {
+            source.invoke().filter(refinery)
+        }
+
     override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> =
         WrappingSuspendRefinement {
             source.invoke().suspendFilter(block)
@@ -93,5 +104,6 @@ internal class ErrorSuspendRefinement<T>(private val exception: RefinementExcept
         ErrorSuspendRefinement(exception)
 
     override fun filter(block: (T) -> Boolean): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
+    override fun filter(refinery: Refinery<T, *>): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
     override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
 }
