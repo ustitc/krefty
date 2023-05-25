@@ -105,4 +105,24 @@ class RefinementTest : StringSpec({
         val refinement = refine("") { it.isNotBlank() }
         refinement.isRefined() shouldBe false
     }
+
+    "is refined by Refinery" {
+        val refinement = refine("test").filter(NotBlankString)
+        refinement.isRefined() shouldBe true
+    }
+
+    "is not refined by Refinery" {
+        val refinement = refine("").filter(NotBlankString)
+        refinement.isRefined() shouldBe false
+    }
+
+    "flatMaps by Refinery" {
+        val refinement = refine("test").flatMap(NotBlankString)
+        refinement.getOrThrow() shouldBe NotBlankString("test")
+    }
+
+    "flatMaps not by Refinery if not matching the predicate" {
+        val refinement = refine("").flatMap(NotBlankString)
+        refinement.isRefined() shouldBe false
+    }
 })

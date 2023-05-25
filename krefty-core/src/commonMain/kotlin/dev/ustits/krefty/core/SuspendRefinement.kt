@@ -16,6 +16,8 @@ interface SuspendRefinement<T> {
 
     fun <R> flatMap(block: (T) -> SuspendRefinement<R>): SuspendRefinement<R>
 
+    fun <R> flatMap(refinery: Refinery<T, R>): SuspendRefinement<R>
+
     fun filter(block: (T) -> Boolean): SuspendRefinement<T>
 
     fun filter(refinery: Refinery<T, *>): SuspendRefinement<T>

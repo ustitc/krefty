@@ -14,6 +14,8 @@ interface Refinement<T> {
 
     fun <R> flatMap(block: (T) -> Refinement<R>): Refinement<R>
 
+    fun <R> flatMap(refinery: Refinery<T, R>): Refinement<R>
+
     fun filter(block: (T) -> Boolean): Refinement<T>
 
     fun filter(refinery: Refinery<T, *>): Refinement<T>

@@ -32,6 +32,10 @@ internal class RefinementImpl<T> internal constructor(
             ErrorRefinement(RefinementException(value))
         }
 
+    override fun <R> flatMap(refinery: Refinery<T, R>): Refinement<R> = flatMap {
+        refinery.refinement(value)
+    }
+
     override fun filter(block: (T) -> Boolean): Refinement<T> =
         RefinementImpl(value) {
             predicate.invoke(value) && block.invoke(value)
@@ -75,6 +79,7 @@ private class ErrorRefinement<T>(private val exception: RefinementException) : R
     override fun getOrError(): Result<T> = Result.failure(exception)
     override fun <R> map(block: (T) -> R): Refinement<R> = ErrorRefinement(exception)
     override fun <R> flatMap(block: (T) -> Refinement<R>): Refinement<R> = ErrorRefinement(exception)
+    override fun <R> flatMap(refinery: Refinery<T, R>): Refinement<R> = ErrorRefinement(exception)
     override fun filter(block: (T) -> Boolean): Refinement<T> = this
     override fun filter(refinery: Refinery<T, *>): Refinement<T> = ErrorRefinement(exception)
     override fun filter(predicate: Predicate<T>): Refinement<T> = this

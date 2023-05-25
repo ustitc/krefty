@@ -97,4 +97,24 @@ class SuspendRefinementTest : StringSpec({
         val refinement = suspendRefine("") { it.isNotBlank() }
         refinement.isRefined() shouldBe false
     }
+
+    "is refined by Refinery" {
+        val refinement = suspendRefine("test") { true }.filter(NotBlankString)
+        refinement.isRefined() shouldBe true
+    }
+
+    "is not refined by Refinery" {
+        val refinement = suspendRefine("") { true }.filter(NotBlankString)
+        refinement.isRefined() shouldBe false
+    }
+
+    "flatMaps by Refinery" {
+        val refinement = suspendRefine("test") { true }.flatMap(NotBlankString)
+        refinement.getOrThrow() shouldBe NotBlankString("test")
+    }
+
+    "flatMaps not by Refinery if not matching the predicate" {
+        val refinement = suspendRefine("") { true }.flatMap(NotBlankString)
+        refinement.isRefined() shouldBe false
+    }
 })

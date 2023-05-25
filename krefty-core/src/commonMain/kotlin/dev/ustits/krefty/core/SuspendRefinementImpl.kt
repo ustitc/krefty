@@ -39,6 +39,10 @@ internal class SuspendRefinementImpl<T>(
         }
     }
 
+    override fun <R> flatMap(refinery: Refinery<T, R>): SuspendRefinement<R> = flatMap {
+        refinery.refinement(value).suspendFilter { true }
+    }
+
     override fun filter(block: (T) -> Boolean): SuspendRefinement<T> {
         return SuspendRefinementImpl(value) {
             this.predicate.invoke(value) && block.invoke(value)
@@ -77,6 +81,11 @@ private class WrappingSuspendRefinement<T>(
             source.invoke().flatMap(block)
         }
 
+    override fun <R> flatMap(refinery: Refinery<T, R>): SuspendRefinement<R> =
+        WrappingSuspendRefinement {
+            source.invoke().flatMap(refinery)
+        }
+
     override fun filter(block: (T) -> Boolean): SuspendRefinement<T> =
         WrappingSuspendRefinement {
             source.invoke().filter(block)
@@ -102,7 +111,7 @@ internal class ErrorSuspendRefinement<T>(private val exception: RefinementExcept
     override fun <R> map(block: (T) -> R): SuspendRefinement<R> = ErrorSuspendRefinement(exception)
     override fun <R> flatMap(block: (T) -> SuspendRefinement<R>): SuspendRefinement<R> =
         ErrorSuspendRefinement(exception)
-
+    override fun <R> flatMap(refinery: Refinery<T, R>): SuspendRefinement<R> = ErrorSuspendRefinement(exception)
     override fun filter(block: (T) -> Boolean): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
     override fun filter(refinery: Refinery<T, *>): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
     override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
