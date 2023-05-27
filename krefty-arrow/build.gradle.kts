@@ -8,9 +8,9 @@ plugins {
 
 kotlin {
     jvm()
-    js(IR) {
-        nodejs()
-    }
+//    js(IR) {
+//        nodejs()
+//    }
 
     sourceSets {
         val commonMain by getting {
@@ -33,8 +33,8 @@ kotlin {
                 implementation(libs.kotest.junit5)
             }
         }
-        val jsMain by getting
-        val jsTest by getting
+//        val jsMain by getting
+//        val jsTest by getting
     }
 
 //    val javadocJar by tasks.registering(Jar::class) {
