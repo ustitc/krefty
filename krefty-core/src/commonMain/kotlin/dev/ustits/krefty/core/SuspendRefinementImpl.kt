@@ -1,5 +1,8 @@
 package dev.ustits.krefty.core
 
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
+
 internal class SuspendRefinementImpl<T>(
     private val value: T,
     private val predicate: suspend (T) -> Boolean
@@ -9,19 +12,16 @@ internal class SuspendRefinementImpl<T>(
 
     override suspend fun getOrThrow(): T = getOrNull() ?: throw RefinementException(value)
 
-    override suspend fun getOrNull(): T? = if (predicate.invoke(value)) value else null
+    override suspend fun getOrNull(): T? = value.takeIf { predicate(it) }
 
-    override suspend fun getOrError(): Result<T> =
-        if (predicate.invoke(value))
-            Result.success(value)
-        else
-            Result.failure(RefinementException(value))
+    override suspend fun getOrError(): Result<T> = getOrNull()
+        ?.let { success(it) } ?: failure(RefinementException(value))
 
-    override suspend fun isRefined(): Boolean = predicate.invoke(value)
+    override suspend fun isRefined(): Boolean = predicate(value)
 
     override fun <R> map(block: (T) -> R): SuspendRefinement<R> {
         return WrappingSuspendRefinement {
-            if (predicate.invoke(value)) {
+            if (predicate(value)) {
                 suspendRefine(block(value)) { true }
             } else {
                 ErrorSuspendRefinement(RefinementException(value))
@@ -31,7 +31,7 @@ internal class SuspendRefinementImpl<T>(
 
     override fun <R> flatMap(block: (T) -> SuspendRefinement<R>): SuspendRefinement<R> {
         return WrappingSuspendRefinement {
-            if (predicate.invoke(value)) {
+            if (predicate(value)) {
                 block(value)
             } else {
                 ErrorSuspendRefinement(RefinementException(value))
@@ -45,19 +45,19 @@ internal class SuspendRefinementImpl<T>(
 
     override fun filter(block: (T) -> Boolean): SuspendRefinement<T> {
         return SuspendRefinementImpl(value) {
-            this.predicate.invoke(value) && block.invoke(value)
+            this.predicate(value) && block(value)
         }
     }
 
     override fun filter(refinery: Refinery<T, *>): SuspendRefinement<T> {
         return SuspendRefinementImpl(value) {
-            this.predicate.invoke(value) && refinery.refinement(value).isRefined()
+            this.predicate(value) && refinery.refinement(value).isRefined()
         }
     }
 
     override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> {
         return SuspendRefinementImpl(value) {
-            this.predicate.invoke(value) && block.invoke(value)
+            this.predicate(value) && block(value)
         }
     }
 }
@@ -73,32 +73,32 @@ private class WrappingSuspendRefinement<T>(
 
     override fun <R> map(block: (T) -> R): SuspendRefinement<R> =
         WrappingSuspendRefinement {
-            source.invoke().map(block)
+            source().map(block)
         }
 
     override fun <R> flatMap(block: (T) -> SuspendRefinement<R>): SuspendRefinement<R> =
         WrappingSuspendRefinement {
-            source.invoke().flatMap(block)
+            source().flatMap(block)
         }
 
     override fun <R> flatMap(refinery: Refinery<T, R>): SuspendRefinement<R> =
         WrappingSuspendRefinement {
-            source.invoke().flatMap(refinery)
+            source().flatMap(refinery)
         }
 
     override fun filter(block: (T) -> Boolean): SuspendRefinement<T> =
         WrappingSuspendRefinement {
-            source.invoke().filter(block)
+            source().filter(block)
         }
 
     override fun filter(refinery: Refinery<T, *>): SuspendRefinement<T> =
         WrappingSuspendRefinement {
-            source.invoke().filter(refinery)
+            source().filter(refinery)
         }
 
     override fun suspendFilter(block: suspend (T) -> Boolean): SuspendRefinement<T> =
         WrappingSuspendRefinement {
-            source.invoke().suspendFilter(block)
+            source().suspendFilter(block)
         }
 }
 
@@ -106,11 +106,12 @@ internal class ErrorSuspendRefinement<T>(private val exception: RefinementExcept
     override suspend fun getOrElse(block: suspend () -> T): T = block()
     override suspend fun getOrThrow(): T = throw exception
     override suspend fun getOrNull(): T? = null
-    override suspend fun getOrError(): Result<T> = Result.failure(exception)
+    override suspend fun getOrError(): Result<T> = failure(exception)
     override suspend fun isRefined(): Boolean = false
     override fun <R> map(block: (T) -> R): SuspendRefinement<R> = ErrorSuspendRefinement(exception)
     override fun <R> flatMap(block: (T) -> SuspendRefinement<R>): SuspendRefinement<R> =
         ErrorSuspendRefinement(exception)
+
     override fun <R> flatMap(refinery: Refinery<T, R>): SuspendRefinement<R> = ErrorSuspendRefinement(exception)
     override fun filter(block: (T) -> Boolean): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
     override fun filter(refinery: Refinery<T, *>): SuspendRefinement<T> = ErrorSuspendRefinement(exception)
