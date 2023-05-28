@@ -1,18 +1,11 @@
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotest.multiplatform)
     alias(libs.plugins.detekt)
+    id("multiplatform-build")
     id("multiplatform-publishing")
 }
 
 kotlin {
-    jvm {
-        withJava()
-    }
-    js(IR) {
-        nodejs()
-    }
-
     sourceSets {
         val commonMain by getting
         val commonTest by getting {

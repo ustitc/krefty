@@ -7,6 +7,7 @@ detekt = "1.22.0"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
