@@ -12,8 +12,16 @@ on:
         default: 'main'
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        target:
+          - publishKotlinMultiplatformPublicationToSonatypeRepository
+          - publishJvmPublicationToSonatypeRepository
+          - publishJsPublicationToSonatypeRepository
 
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +36,7 @@ jobs:
           distribution: 'temurin'
 
       - name: deploy to sonatype
-        run: ./gradlew publish
+        run: ./gradlew ${{ matrix.target }}
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
