@@ -1,78 +1,137 @@
-![Krefty](docs/krefty.png)
-
----
+# Krefty
 
 [![CI](https://github.com/ustits/krefty/actions/workflows/build.yml/badge.svg)](https://github.com/ustits/krefty/actions/workflows/build.yml)
 [![Licence](https://img.shields.io/github/license/ustits/krefty)](https://github.com/ustits/krefty/blob/main/LICENSE)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.ustits.krefty/krefty-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.ustits.krefty/krefty-core)
 
-Krefty is a tool for constructing concrete (refined) types specific for your domain. It uses refinement type theory,
-i.e. types wrapping a predicate and a value which satisfies it. 
-For DDD users refined types can be viewed as an alternative to value objects or [whole objects](http://c2.com/ppr/checks.html#1). 
-Inspired by implementations in [haskell](https://github.com/nikita-volkov/refined)
-and [scala](https://github.com/fthomas/refined).
+Krefty is a Kotlin library that empowers the creation of domain-specific types while addressing the Primitive Obsession anti-pattern. 
+It provides a robust framework for constructing types inspired by the Refinement Type Theory, where types are composed of a predicate and a value that satisfies it.
 
-Also check out [arrow-exact](https://github.com/arrow-kt/arrow-exact) and [values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) which solve the same problem. 
+Krefty is particularly useful for Domain-Driven Design (DDD) users, where refined types can be viewed as a viable 
+alternative to Value Objects. 
+Inspired by implementations in [Haskell](https://github.com/nikita-volkov/refined)
+and [Scala](https://github.com/fthomas/refined).
 
-## Getting started
+Also check out [Arrow-Exact](https://github.com/arrow-kt/arrow-exact) and [Values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) which solve the same problem. 
 
-```
+## Getting started 🚀
+
+Add Krefty to your dependencies:
+
+``` kotlin
 implementation("dev.ustits.krefty:krefty-core:<latest_version>")
+```
+
+For snapshot versions
+
+``` kotlin
+repositories {
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
+}
+
+implementation("dev.ustits.krefty:krefty-core:<latest_version>-SNAPSHOT")
 ```
 
 ## Usage
 
-Use `refine` and pass a desired predicate. It will return a `Refinement` type which holds a value if it 
-matches a predicate or an exception if not:
+### Refinery 🏭
+
+Let's consider an example where we need a type for describing names. We must ensure that the name is not empty and that 
+we have a specific type for it:
 
 ```kotlin
-val name = refine(NotBlank(), "Krefty") 
+@JvmInline
+value class Name private constructor(private val value: String) {
+
+    companion object : Refinery<String, Name>() {
+        override fun Refinement<String>.refine() = filter { it.isNotBlank() }.map { Name(it) }
+    }
+}
+```
+
+We define a `Name` class that holds a `String` value.
+The `Refinery` serves as a medium to fine-tune the conversion from String to Name. This is done by implementing 
+the `refine()` function, which applies filters to check if the string is non-empty. 
+If the string satisfies this condition, it is then transformed into a `Name` instance.
+
+You now have the ability to generate Name instances, for example by using the `fromOrThrow` method:
+
+``` kotlin
+val grog = Name.fromOrThrow("Grog") // returns a Name instance "Grog"
+val void = Name.fromOrThrow("")     // throws RefinementException
+```
+
+For a simplified version of `from`, you can apply specific `Refinery` implementations:
+
+- `NullRefinery`
+- `ThrowingRefinery`
+- `ResultRefinery`
+
+For instance, with `ResultRefinery`, the usage would look like this:
+
+``` kotlin
+companion object : ResultRefinery<String, Name>()
+
+Name.from("Scanlan")  // returns Result.success
+```
+
+### Refinement 🛢️
+
+`Refinement` is a core concept in the Krefty. You can think of it as a container (monad) for a value and a predicate.
+If the value matches the predicate, it holds that value, otherwise, it holds an error.
+
+Like Collections, Either, and other monadic types, `Refinement` provides several operations that can be used to 
+manipulate and transform the refined type:
+
+```kotlin
+refinement
+    .filter { it.isNotBlank() }
+    .map { NotBlankString(it) }
+    .flatMap { refine(it, this::isName) }
+```
+
+`Refinery` itself can also be used as a transformation:
+
+```kotlin
+refinement
+    .filter(NotBlankString)
+    .flatMap(Name)
+```
+
+You can also use `Refinement` separately from `Refinery`, for example by using `refine` function:
+
+```kotlin
+val name = refine("Krefty") { it.isNotBlank() } 
 name.getOrThrow()       // "Krefty"
 name.isRefined()        // true
 
-val version = refine(NotBlank(), "")
+val version = refine("") { it.isNotBlank() }
 version.getOrThrow()    // throws RefinementException
 version.isRefined()     // false
 ```
 
-`Refinement` can be used in the same way as Collections, Either and other monads:
+For refinements that involve side effects, the `suspendRefine` function can be used:
 
 ```kotlin
-refine("Krefty")
-    .filter(NotBlank())
-    .filter { it.length > 3 }
-    .map { NotBlankString(it) }
-    .flatMap { refine(UserNamePredicate(), it) }
-```
-
-### Predicates
-
-Krefty is shipped with predefined `Predicate`s but it strongly encouraged to make domain specific ones. 
-New predicates can be made by implementing `Predicate` or by using delegation:
-
-```kotlin
-class UserID : Predicate<Int> {
+suspendRefine("94926946-2e51-4b14-a9bd-2ce9ad02b29b") {
+    service.existsById(it)
 }
-// or
-class UserID : Predicate<Int> by Positive()
 
-val userID = refine(UserID(), 443812) 
+class Service {
+    suspend fun existsById(id: String): Boolean
+}
 ```
 
-Combine predicates using `and`, `or` functions or by `All` and `Some` classes:
+### Arrow
 
-```kotlin
-class Percent : Predicate<Int> by GreaterOrEqual(0) and LessOrEqual(100)
-// or
-class Percent : Predicate<Int> by All(GreaterOrEqual(0), LessOrEqual(100))
+Krefty can be used with `Either` type from [Arrow](https://github.com/arrow-kt/arrow). In order to use it add `krefty-arrow` to your dependencies:
 
-val percent = 45 refine Percent()
+``` kotlin
+implementation("dev.ustits.krefty:krefty-arrow:<latest_version>")
 ```
 
-Invert predicates with `!` function or `Not` class:
+Then you can use `EitherRefinery` to get results as an `Either`:
 
 ```kotlin
-class NotPercent : Predicate<Int> by !Percent()
-// or
-class NotPercent : Predicate<Int> by Not(Percent())
+Name.from("Keyleth") // Either<RefinementError, Name>
 ```
