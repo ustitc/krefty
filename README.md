@@ -50,14 +50,14 @@ value class Name private constructor(private val value: String) {
 ```
 
 We define a `Name` class that holds a `String` value.
-The `Refinery` serves as a medium to fine-tune the conversion from String to Name. This is done by implementing 
-the `refine()` function, which applies filters to check if the string is non-empty. 
+`Refinery` serves as a medium to fine-tune the conversion from String to Name. This is done by implementing 
+`refine()` function, which applies filters to check if the string is non-empty. 
 If the string satisfies this condition, it is then transformed into a `Name` instance.
 
 You now have the ability to generate Name instances, for example by using the `fromOrThrow` method:
 
 ``` kotlin
-val grog = Name.fromOrThrow("Grog") // returns a Name instance "Grog"
+val grog = Name.fromOrThrow("Grog") // Name instance "Grog"
 val void = Name.fromOrThrow("")     // throws RefinementException
 ```
 
@@ -72,16 +72,15 @@ For instance, with `ResultRefinery`, the usage would look like this:
 ``` kotlin
 companion object : ResultRefinery<String, Name>()
 
-Name.from("Scanlan")  // returns Result.success
+Name.from("Scanlan")  // Result.success
 ```
 
 ### Refinement 🛢️
 
-`Refinement` is a core concept in the Krefty. You can think of it as a container (monad) for a value and a predicate.
+`Refinement` is a core concept in Krefty. You can think of it as a container for a value and a predicate.
 If the value matches the predicate, it holds that value, otherwise, it holds an error.
 
-Like Collections, Either, and other monadic types, `Refinement` provides several operations that can be used to 
-manipulate and transform the refined type:
+`Refinement` provides familiar operations, like `map` and `filter`, to validate and transform the refined type:
 
 ```kotlin
 refinement
